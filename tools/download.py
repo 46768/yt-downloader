@@ -45,6 +45,13 @@ def run(args):
 
     dlog = open(args.dlog, 'a')
 
+    dlog_info = open(args.dlog, 'r')
+
+    log_info = dlog_info.read()
+    downloaded_url = [x.split('\t')[2] for x in log_info.split('\n')[:-1]]
+
+    dlog_info.close()
+
     videos_to_download = []
 
     with yt_dlp.YoutubeDL({"quiet": True}) as ydl:
@@ -61,9 +68,13 @@ def run(args):
             uploader, uploader_id = video["uploader"], video["uploader_id"]
             url = video["webpage_url"]
 
+            if url in downloaded_url:
+                print(title+" is already downloaded")
+                continue
+
             print("downloading "+title)
             ydl_download.download(url)
-            dlog.write(f"[{time.asctime()}] {title}:{uploader}"
-                       f"/{uploader_id}:{url}\n")
+            dlog.write(f"[{time.asctime()}] {title}\t{uploader}"
+                       f"/{uploader_id}\t{url}\n")
 
     dlog.close()
