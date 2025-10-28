@@ -1,6 +1,5 @@
 import yt_dlp
 import time
-import json
 from util import ensure_directory
 
 ARG_PARSER = {
@@ -23,7 +22,10 @@ ARGS = {
         "default": "data/download.log"},
     "-x;--extract_audio": {
         "help": "Extract only audio. Uses yt-dlp's -x flag",
-        "action": "store_true"}
+        "action": "store_true"},
+    "-s;--subtitle": {
+        "help": "Extract subtitles too",
+        "action": "store_true"},
 }
 
 
@@ -32,7 +34,7 @@ def run(args):
     yt_dlp_outtmpl = args.outdir.rstrip('/')+'/'+args.outfmt
     ydl_download_config = {
         "outtmpl": yt_dlp_outtmpl,
-        "quite": True
+        "writesubtitles": args.subtitle,
     }
 
     if args.extract_audio:
